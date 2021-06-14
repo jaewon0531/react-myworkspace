@@ -69,6 +69,7 @@ const Home = () => {
     elm.sido = sidoKorName[elm.sido];
   }
 
+  // 서울 중구의 시간대별 변화
   const locationCurrentData = [
     { dataTime: "05-27:01", pm10: 46, pm25: 15 },
     { dataTime: "05-27:02", pm10: 46, pm25: 18 },
@@ -112,7 +113,7 @@ const Home = () => {
       </Hidden>
       <Grid item xs={12} sm={12} lg={10}>
         <Paper className={classes.paper} style={{ height: "40vh" }}>
-          item xs={12} sm={12} lg={8}
+          item xs={12} sm={12} lg={10}
         </Paper>
       </Grid>
       <Hidden mdDown>
