@@ -45,6 +45,7 @@ const Todo = () => {
     // setTodoList(() => [{ memo: input.current.value }].concat(todoList));
 
     // 입력박스의 값을 비움
+    input.current.value = "";
   };
 
   // <></>: Fragment
@@ -73,7 +74,6 @@ const Todo = () => {
               let newArr = arr.map((element, index) => {
                 return element + 1;
               })
-
               newArr == [2, 3, 4, 5, 6]
             */
 
@@ -82,7 +82,6 @@ const Todo = () => {
                 { memo: "React 공부하기" },
                 { memo: "Javascript 연습하기" },
               ]
-
               변경된배열 = [
                 <li key={0}>React 공부하기</li>, 
                 <li key={1}>Javascript 연습하기</li>

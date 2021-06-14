@@ -9,7 +9,7 @@ const Counter = () => {
   // const [state변수명, state변경함수명] = useState(state변수의 초깃값);
   // state변수 생성 및 state 변경 함수를 생성
   const [count, setCount] = useState(0);
-  const [data, setData] = useState("");
+  // const [data, setData] = useState("");
 
   const increaseCounter = () => {
     // state변수를 변경
@@ -17,7 +17,7 @@ const Counter = () => {
 
     // state 변경함수를 실행 -> 컴포넌트를 다시 렌더링함
     setCount(count + 1); // 기존 state에 + 1을 해서 적용
-    setData("test: " + count);
+    // setData("test: " + count);
 
     // 변동된 내용을 HTML에 바로 적용하지 않음
     // Virtual Dom Tree(자바스크립트 객체)에만 업데이트

@@ -14,7 +14,8 @@ const Contact = () => {
         user: input1.current.value,
         number: input2.current.value,
         mail: input3.current.value,
-      }, ...contactList,
+      },
+      ...contactList,
     ]);
     input1.current.value = "";
     input2.current.value = "";
@@ -87,14 +88,25 @@ const Contact = () => {
         <table>
           <thead>
             <tr>
+              <th></th>
               <th>이름</th>
               <th>전화번호</th>
               <th>이메일</th>
+              <th></th>
             </tr>
           </thead>
           <tbody ref={tbody}>
             {contactList.map((contact, index) => (
               <tr key={index}>
+                <td>
+                  <button
+                    onClick={() => {
+                      remove(index);
+                    }}
+                  >
+                    삭제
+                  </button>
+                </td>
                 {!contact.isEdit && (
                   <td className={"tdUser"}>{contact.user}</td>
                 )}
@@ -106,40 +118,73 @@ const Contact = () => {
                 )}
 
                 {!contact.isEdit && (
-                  <button onClick={() => { edit(index); }}>수정</button>
+                  <button
+                    onClick={() => {
+                      edit(index);
+                    }}
+                  >
+                    수정
+                  </button>
                 )}
 
                 {contact.isEdit && (
                   <td>
-                    <input type="text" defaultValue={contact.user} className={"tdUser"}></input>
-                  </td>)}
+                    <input
+                      type="text"
+                      defaultValue={contact.user}
+                      className={"tdUser"}
+                    ></input>
+                  </td>
+                )}
                 {contact.isEdit && (
                   <td>
-                    <input type="text" defaultValue={contact.number} className={"tdNumber"}></input>
-                  </td>)}
+                    <input
+                      type="text"
+                      defaultValue={contact.number}
+                      className={"tdNumber"}
+                    ></input>
+                  </td>
+                )}
                 {contact.isEdit && (
                   <td>
-                    <input type="text" defaultValue={contact.mail} className={"tdMail"}></input>
-                  </td>)}
+                    <input
+                      type="text"
+                      defaultValue={contact.mail}
+                      className={"tdMail"}
+                    ></input>
+                  </td>
+                )}
 
                 {contact.isEdit && (
-                  <td><button onClick={() => { save(index); }}>저장</button>
-                  </td>)}
+                  <td>
+                    <button
+                      onClick={() => {
+                        save(index);
+                      }}
+                    >
+                      저장
+                    </button>
+                  </td>
+                )}
 
                 {contact.isEdit && (
-                  <td><button onClick={() => { cancel(index); }}>취소</button>
-                  </td>)}
-
-                <td>
-                  <button onClick={() => { remove(index); }}>삭제</button>
-                </td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        cancel(index);
+                      }}
+                    >
+                      취소
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default Contact;

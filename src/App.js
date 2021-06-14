@@ -1,8 +1,13 @@
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Suspense, lazy, useState } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+// https://material-ui.com/customization/palette/
+// https://material-ui.com/customization/color/
+// https://material-ui.com/styles/api/#themeprovider
+import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
+import { green, purple } from "@material-ui/core/colors";
 
+import { ThemeProvider } from "@material-ui/styles";
 // Core Components
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -25,9 +30,32 @@ import {
   Menu as MenuIcon,
 } from "@material-ui/icons";
 
-import Home from "./components/Home";
+import Home from "./components/home/Home";
 
-const Todo = lazy(() => import("./components/TodoMaterial"));
+import { createStore, applyMiddleware } from "redux"; // saga middleware를 redux store에 적용하는데 씀
+import { Provider } from "react-redux";
+import createSagaMiddleware from "redux-saga"; // saga middleware를 생성하는데 씀
+
+// ./redux :
+// redux.js , ./redux/index.js
+import rootReducer from "./redux/reducers"; // 루트 리듀서
+import rootSaga from "./redux/sagas"; // 루트 사가
+
+// saga middleware 생성
+const sagaMiddleWare = createSagaMiddleware();
+
+// rootReduer로 redux store 생성
+// sagaMiddleware 적용
+const store = createStore(rootReducer, applyMiddleware(sagaMiddleWare));
+
+// 루트 saga로 saga middleware 실행
+// saga에서 중간에 캐치할 action들에 대해서 응답대기
+// 반복문이 돌고 있음 -> event-loop
+sagaMiddleWare.run(rootSaga);
+
+// 라우터에 로딩되는 컴포넌트는 컨테이너 컴포넌트
+const Todo = lazy(() => import("./components/todo-redux/Todo"));
+const TodoDetail = lazy(() => import("./components/todo-redux/TodoDetail"));
 const Contact = lazy(() => import("./components/Contact"));
 
 const drawerWidth = "240px";
@@ -72,6 +100,20 @@ function App() {
   const classes = useStyles(); // css 클래스 목록이 생성됨
   const [mobileOpen, setMobileOpen] = useState(false); // 앱서랍 열기/닫기
 
+  // https://material-ui.com/customization/palette/
+  // https://material-ui.com/customization/color/
+  const theme = createMuiTheme({
+    palette: {
+      // type: "dark",
+      primary: {
+        main: green[600],
+      },
+      secondary: {
+        main: purple[600],
+      },
+    },
+  });
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -109,64 +151,72 @@ function App() {
   );
 
   return (
-    <Router>
-      <div className={classes.root}>
-        <header>
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              {/* color="inherit" 부모 요소의 폰트 컬러를 사용함 */}
-              <IconButton
-                color="inherit"
-                edge="start"
-                className={classes.menuButton}
-                onClick={handleDrawerToggle}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap>
-                MY WORKSPACE
-              </Typography>
-            </Toolbar>
-          </AppBar>
+    // Provider 하위 컴포넌트들에 redux store를 쓸 수 있게 해줌
+    <Provider store={store}>
+      {/* // https://material-ui.com/styles/api/#themeprovider */}
+      <ThemeProvider theme={theme}>
+        <Router>
+          <div className={classes.root}>
+            <header>
+              <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar>
+                  {/* color="inherit" 부모 요소의 폰트 컬러를 사용함 */}
+                  <IconButton
+                    color="inherit"
+                    edge="start"
+                    className={classes.menuButton}
+                    onClick={handleDrawerToggle}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Typography variant="h6" noWrap>
+                    MY WORKSPACE
+                  </Typography>
+                </Toolbar>
+              </AppBar>
 
-          {/* 앱서랍(Drawer)  */}
+              {/* 앱서랍(Drawer)  */}
 
-          {/* 화면이 1280px 이상일 때 숨기는 서랍 */}
-          <Hidden lgUp implementation="css">
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              classes={{ paper: classes.drawerPaper }}
-              onClose={handleDrawerToggle}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
+              {/* 화면이 1280px 이상일 때 숨기는 서랍 */}
+              <Hidden lgUp implementation="css">
+                <Drawer
+                  variant="temporary"
+                  open={mobileOpen}
+                  classes={{ paper: classes.drawerPaper }}
+                  onClose={handleDrawerToggle}
+                >
+                  {drawer}
+                </Drawer>
+              </Hidden>
 
-          {/* 화면이 1280px 미만일 때 숨기는 서랍 */}
-          <Hidden mdDown implementation="css">
-            <Drawer
-              open
-              variant="permanent"
-              classes={{ paper: classes.drawerPaper }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </header>
-        <main className={classes.content}>
-          {/* 상단 toolbar 공간만큼 띄우기 */}
-          <div className={classes.toolbar} />
-          <Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              <Route path="/" component={Home} exact></Route>
-              <Route path="/todo" component={Todo}></Route>
-              <Route path="/contacts" component={Contact}></Route>
-            </Switch>
-          </Suspense>
-        </main>
-      </div>
-    </Router>
+              {/* 화면이 1280px 미만일 때 숨기는 서랍 */}
+              <Hidden mdDown implementation="css">
+                <Drawer
+                  open
+                  variant="permanent"
+                  classes={{ paper: classes.drawerPaper }}
+                >
+                  {drawer}
+                </Drawer>
+              </Hidden>
+            </header>
+            <main className={classes.content}>
+              {/* 상단 toolbar 공간만큼 띄우기 */}
+              <div className={classes.toolbar} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Switch>
+                  <Route path="/" component={Home} exact></Route>
+                  <Route path="/todo" component={Todo} exact></Route>
+                  {/* :매개변수명 -> 컴포넌트에서 변수처럼 받을 수 있음 */}
+                  <Route path="/todo/:id" component={TodoDetail}></Route>
+                  <Route path="/contacts" component={Contact} exact></Route>
+                </Switch>
+              </Suspense>
+            </main>
+          </div>
+        </Router>
+      </ThemeProvider>
+    </Provider>
   );
 }
 
