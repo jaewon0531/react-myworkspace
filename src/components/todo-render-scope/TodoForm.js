@@ -1,6 +1,8 @@
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
+import { memo } from "react";
+
 const TodoForm = ({ inputRef, onChange, onAdd }) => {
   return (
     <div style={{ display: "flex" }}>
@@ -27,4 +29,4 @@ const TodoForm = ({ inputRef, onChange, onAdd }) => {
   );
 };
 
-export default TodoForm;
+export default memo(TodoForm);

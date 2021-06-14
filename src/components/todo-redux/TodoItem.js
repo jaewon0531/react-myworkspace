@@ -5,7 +5,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import { Check } from "@material-ui/icons";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 
@@ -36,7 +36,6 @@ const TodoItem = ({ todo }) => {
       {!isEdit && (
         <ListItemText
           style={{ cursor: "pointer" }}
-          // history.push('경로'), history 스택(stack)에 경로 추가
           onClick={() => {
             history.push(`/todo/${todo.id}`);
           }}

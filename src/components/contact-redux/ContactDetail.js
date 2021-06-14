@@ -7,9 +7,9 @@ import { Box, Button, Divider, Typography } from "@material-ui/core";
 
 import { useParams, useHistory } from "react-router-dom";
 
-import TodoComment from "./TodoComment";
+import ContactComment from "./ContactComment";
 
-import { list } from "./data";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,16 +24,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TodoDetail = () => {
+const ContactDetail = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  // /todo/:id
   const { id } = useParams();
-  // console.log(id);
-  // URL 매개변수는 문자열로 들어옴 숫자값 비교면 변환 후 비교
-  const todo = list.filter((todo) => parseFloat(id) === parseFloat(todo.id))[0];
-  console.log(todo);
+  const contact = useSelector(
+    (state) => state.contact.filter((contact) => contact.id === parseInt(id))[0]
+  );
 
   return (
     <>
@@ -43,33 +41,27 @@ const TodoDetail = () => {
         </Hidden>
         <Grid item xs={12} sm={10} md={8} lg={6}>
           <Paper className={classes.paper}>
-            <Typography variant="h3">To-Do</Typography>
+            <Typography variant="h3">Contact</Typography>
             <Divider style={{ marginTop: "1rem", marginBottom: "2rem" }} />
-            <Box style={{ padding: "1rem" }}>{todo.memo}</Box>
+            <Box style={{ padding: "1rem" }}>{contact.fname}</Box>
             <Box style={{ display: "flex", direction: "rtl" }}>
               <Button
                 size="small"
                 variant="outlined"
                 color="primary"
-                // onClick={() => {
-                //   history.push("/todo");
-                // }}
                 onClick={() => {
-                  history.replace("/todo");
+                  history.push("/contacts");
                 }}
-              // onClick={() => {
-              //   history.goBack(-1);
-              // }}
               >
                 목록
               </Button>
             </Box>
           </Paper>
-          {todo.comments && (
+          {contact.comments && (
             <Paper style={{ marginTop: "2rem" }} className={classes.paper}>
               <List>
-                {todo.comments.map((comment, index) => (
-                  <TodoComment key={index} index={index} comment={comment} />
+                {contact.comments.map((comment, index) => (
+                  <ContactComment key={index} index={index} comment={comment} />
                 ))}
               </List>
             </Paper>
@@ -83,4 +75,4 @@ const TodoDetail = () => {
   );
 };
 
-export default TodoDetail;
+export default ContactDetail;

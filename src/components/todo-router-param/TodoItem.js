@@ -24,7 +24,6 @@ const TodoItem = ({ index, todo, onRemove, onSave }) => {
       {!isEdit && (
         <ListItemText
           style={{ cursor: "pointer" }}
-          // history.push('경로'), history 스택(stack)에 경로 추가
           onClick={() => {
             history.push(`/todo/${todo.id}`);
           }}

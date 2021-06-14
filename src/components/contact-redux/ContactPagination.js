@@ -1,15 +1,12 @@
 import TablePagination from "@material-ui/core/TablePagination";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const TodoPagination = () => {
-  const { totalElements, page, size, keyword } = useSelector(
-    (state) => state.todo
-  );
+const ContactPagination = ({ totalElements, page, size }) => {
   const dispatch = useDispatch();
 
   const handleChangePage = (event, newPage) => {
     dispatch({
-      type: "FETCH_TODOLIST_PAGING",
+      type: "FETCH_CONTACTLIST_PAGING",
       payload: { page: newPage, size },
     });
   };
@@ -18,7 +15,7 @@ const TodoPagination = () => {
     const newSize = parseInt(event.target.value);
 
     dispatch({
-      type: "FETCH_TODOLIST_PAGING",
+      type: "FETCH_CONTACTLIST_PAGING",
       payload: { page: 0, size: newSize },
     });
   };
@@ -31,9 +28,8 @@ const TodoPagination = () => {
       onChangePage={handleChangePage}
       rowsPerPage={size}
       onChangeRowsPerPage={handleChangeRowsPerPage}
-      keyword={keyword}
     />
   );
 };
 
-export default TodoPagination;
+export default ContactPagination;

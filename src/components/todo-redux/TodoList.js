@@ -1,30 +1,38 @@
 import List from "@material-ui/core/List";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TodoItem from "./TodoItem";
-
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 import TodoPagination from "./TodoPagination";
 
 const TodoList = () => {
-  // useSelctor는 redux store의 state를 선택(select)
-  // const 하위state변수 = useSelector((전체state) => 하위state)
-
-  // select: 현재 state를 조회하고 변경을 감지, state가 변경되면 컴포넌트를 업데이트함
   const data = useSelector((state) => state.todo);
+  const { page, size } = useSelector((state) => state.todo);
   console.log("-- todo state in TodoList Component --");
   console.log(data);
   const dispatch = useDispatch();
+  const inputSearch = useRef();
 
-  // 컴포넌트가 처음 마운트 됐을 때 서버에서 데이터를 받아옴
-  // useEffect 훅: 특정 값이 변경됐을 때 처리하는 로직을 작성
-  // []: 컴포넌트가 처음 마운트 됐을 때 실행
-  // [변수]: 변수 값이 바뀔 때 실행
-
-  // 컴포넌트가 마운트되고 dispatch 함수가 생성되면 실행
   useEffect(() => {
-    // 서버에서 데이터를 받아오는 action을 실행
     dispatch({ type: "FETCH_TODOLIST_PAGING" });
   }, [dispatch]);
+
+  const search = (event) => {
+    const keyword = inputSearch.current.value;
+    dispatch({
+      type: "SEARCH_TODOLIST",
+      payload: { page, size, keyword },
+    });
+    inputSearch.current.value = "";
+  };
+
+  const change = (event) => {
+    // console.log(event);
+    if (event.charCode === 13) {
+      search();
+    }
+  };
 
   return (
     <div>
@@ -37,7 +45,27 @@ const TodoList = () => {
         totalElements={data.totalElements}
         page={data.page}
         size={data.size}
+        keyword={data.keyword}
       />
+      <TextField
+        variant="outlined"
+        inputRef={inputSearch}
+        label="조회"
+        onKeyPress={change}
+        size="small"
+        style={{
+          width: "30%",
+          marginRight: "0.5rem",
+        }}
+      />
+      <Button
+        style={{ width: "10%" }}
+        variant="contained"
+        color="primary"
+        onClick={search}
+      >
+        입력
+      </Button>
     </div>
   );
 };
