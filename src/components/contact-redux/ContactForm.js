@@ -19,7 +19,6 @@ const ContactForm = () => {
     inputMail.current.value = "";
   };
   const change = (event) => {
-    // console.log(event);
     if (event.charCode === 13) {
       add();
     }
